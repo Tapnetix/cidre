@@ -7,10 +7,13 @@ use crate::{
     cf,
     core_audio::{
         Class, DeviceTransportType, Obj, PropAddr, PropElement, PropScope, PropSelector,
-        StreamRangedDesc, StreamTerminalType, Tap,
+        StreamRangedDesc, StreamTerminalType,
     },
     os, sys,
 };
+
+#[cfg(feature = "macos_14_2")]
+use crate::core_audio::Tap;
 
 #[cfg(all(feature = "blocks", feature = "dispatch"))]
 use crate::{blocks, dispatch};
@@ -375,6 +378,7 @@ impl System {
     }
 
     #[doc(alias = "kAudioHardwarePropertyTapList")]
+    #[cfg(feature = "macos_14_2")]
     pub fn taps() -> os::Result<Vec<Tap>> {
         Self::OBJ.prop_vec(&PropSelector::HW_TAP_LIST.global_addr())
     }
